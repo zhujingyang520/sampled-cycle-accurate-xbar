@@ -44,6 +44,7 @@ void Testbench::Source()
   mac_in_valid.write(0);
   wait(2);
   reset.write(0);
+  wait();
 
   // TODO: simple data pattern
   for (int i = 0; i < 50; ++i) {
