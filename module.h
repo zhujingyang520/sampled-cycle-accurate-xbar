@@ -43,6 +43,8 @@ class Module {
     // instance variables 
     std::string name_;
     std::string fullname_;            // name containing hierarchy
+
+  protected:
     std::vector<Module *> children_;  // children list 
 };
 

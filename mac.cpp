@@ -49,8 +49,6 @@ MAC::~MAC()
  */
 void MAC::InitMAC()
 {
-  modules_.clear();
-
   // initialize the interconnection wires
   dac_values = new sc_signal<double> [M_];
   crossbar_values = new sc_signal<double> [N_];
@@ -73,8 +71,6 @@ void MAC::InitMAC()
     dacs_[i] -> out_analog(dac_values[i]);
     if (i == 0) dacs_[i] -> out_valid(dac_values_valid);
     else dacs_[i] -> out_valid(dummy1[i]);
-
-    modules_.push_back(dacs_[i]);
   }
 
   // initialize the crossbar
@@ -89,7 +85,6 @@ void MAC::InitMAC()
   crossbar_ -> out_valid(crossbar_values_valid);
   for (int i = 0; i < N_; ++i)
     crossbar_ -> bitline_voltage[i](crossbar_values[i]);
-  modules_.push_back(crossbar_);
 
   // initialize the DACs
   adcs_ = new ADC* [N_];
@@ -105,8 +100,6 @@ void MAC::InitMAC()
     adcs_[i] -> out_digital(out_values[i]);
     if (i == 0) adcs_[i] -> out_valid(out_valid);
     else adcs_[i] -> out_valid(dummy2[i]);
-
-    modules_.push_back(adcs_[i]);
   }
 }
 
@@ -119,8 +112,8 @@ void MAC::InitMAC()
 double MAC::CriticalPath() const
 {
   double result = 0.0;
-  for (vector<Module *>::const_iterator iter = modules_.begin();
-      iter != modules_.end(); ++iter) {
+  for (vector<Module *>::const_iterator iter = children_.begin();
+      iter != children_.end(); ++iter) {
     if (result < (*iter) -> CriticalPath())
       result = (*iter) -> CriticalPath();
   }
@@ -135,8 +128,8 @@ double MAC::CriticalPath() const
 double MAC::Area() const
 {
   double result = 0.0;
-  for (vector<Module *>::const_iterator iter = modules_.begin();
-      iter != modules_.end(); ++iter) {
+  for (vector<Module *>::const_iterator iter = children_.begin();
+      iter != children_.end(); ++iter) {
     result += (*iter) -> Area();
   }
   return result;
@@ -152,8 +145,8 @@ double MAC::Area() const
 double MAC::Power() const
 {
   double result = 0.0;
-  for (vector<Module *>::const_iterator iter = modules_.begin();
-      iter != modules_.end(); ++iter) {
+  for (vector<Module *>::const_iterator iter = children_.begin();
+      iter != children_.end(); ++iter) {
     result += (*iter) -> Power();
   }
   return result;

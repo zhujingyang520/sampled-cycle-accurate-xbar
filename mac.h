@@ -63,8 +63,6 @@ class MAC : public sc_core::sc_module, public Module {
     ADC **adcs_;              // ADC instantiations 
     DAC **dacs_;              // DAC instantiations 
     Crossbar *crossbar_;      // Crossbar instantiation
-
-    std::vector<Module *> modules_; // all modules within the MAC
 };
 
 #endif
